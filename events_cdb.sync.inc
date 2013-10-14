@@ -96,7 +96,8 @@ function events_cdb_node_presave($node) {
     if (isset($node->{'original'}->{'field_photo'}['und'][0]['uri'])) {
       
       $file = new CultureFeed_Cdb_Data_File();
-      $file->setHLink(str_replace('local','www',image_style_url('large', $node->{'original'}->{'field_photo'}['und'][0]['uri'])));
+      // Remove the itok parameter (since drupal 7.20)
+      $file->setHLink(preg_replace('/\?.*/', '',image_style_url('large', $node->{'original'}->{'field_photo'}['und'][0]['uri'])));
       $file->setMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
       $file->setFileName($node->{'original'}->{'field_photo'}['und'][0]['filename']);
       $filetype = str_replace('image/', '', $node->{'original'}->{'field_photo'}['und'][0]['filemime']);
@@ -121,7 +122,7 @@ function events_cdb_node_presave($node) {
     $location_label = 'Den Hemel';
     $location_cdbid = '31410A4E-9851-1D6A-788BCF043C72A4D2';
 
-    // Because we don't have a getActor in the php lib we do it the old way, to be fixed in next release
+    // Todo: switch to the new getActor
     $xml = simplexml_load_file('http://build.uitdatabank.be/api/actor/' . $location_cdbid . '?key=1');
     $actor = $xml->actors->actor;
     $location = $actor->contactinfo->address->physical;
