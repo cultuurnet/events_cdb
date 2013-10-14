@@ -57,7 +57,7 @@ function events_cdb_node_presave($node) {
       $detail->setShortDescription(strip_tags(substr($node->{'field_short_description'}['und'][0]['value'],0,400)));
     }
     
-    if (isset($node->body) && !empty($node->body)) {
+    if (isset($node->body['und'][0]['value']) && !empty($node->body['und'][0]['value'])) {
       $detail->setLongDescription($node->body['und'][0]['value']);
     }
     
