@@ -12,7 +12,7 @@ function events_cdb_node_presave($node) {
   if ($node->type == 'event_cdb') {
     
     $update = FALSE;
-    if (isset($node->{'field_cdbid'}['und'][0]['value'])) {
+    if (false) {
       $update = TRUE;
       $event = DrupalCultureFeed_EntryApi::getEvent($node->{'field_cdbid'}['und'][0]['value']);
     }
@@ -67,10 +67,10 @@ function events_cdb_node_presave($node) {
     if (isset($node->{'field_price'}['und'][0])) {
       $price = new CultureFeed_Cdb_Data_Price($node->{'field_price'}['und'][0]['value']);
       $description = '';
-      if (isset($node->{'field_presale'})) {
+      if (isset($node->{'field_presale'}['und'][0])) {
         $description = 'In voorverkoop: ' . $node->{'field_presale'}['und'][0]['value'] . ' ';
       }
-      if (isset($node->{'field_price_information'})) {
+      if (isset($node->{'field_price_information'}['und'][0])) {
         $description .= $node->{'field_price_information'}['und'][0]['value'];
       }
       $price->setDescription($description);
@@ -93,11 +93,12 @@ function events_cdb_node_presave($node) {
     }
     
     // Media -  image
-    if (isset($node->{'original'}->{'field_photo'}['und'][0]['uri'])) {
+    if (isset($node->{'field_photo'}['und'][0]['fid'])) {
       
       $file = new CultureFeed_Cdb_Data_File();
+      $uri = file_load($node->{'field_photo'}['und'][0]['fid'])->uri;
       // Remove the itok parameter (since drupal 7.20)
-      $file->setHLink(preg_replace('/\?.*/', '',image_style_url('large', $node->{'original'}->{'field_photo'}['und'][0]['uri'])));
+      $file->setHLink(preg_replace('/\?.*/', '',image_style_url('large', $uri)));
       $file->setMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
       $file->setFileName($node->{'original'}->{'field_photo'}['und'][0]['filename']);
       $filetype = str_replace('image/', '', $node->{'original'}->{'field_photo'}['und'][0]['filemime']);
@@ -168,7 +169,7 @@ function events_cdb_node_presave($node) {
         $event->addKeyword($tag['name']);
       }
     }
-    
+
     try {
       if ($update) {
         DrupalCultureFeed_EntryApi::updateEvent($event);
