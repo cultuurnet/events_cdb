@@ -114,8 +114,6 @@ function events_cdb_node_presave($node) {
       
       $detail->getMedia()->add($file);    
     }
-    print "<pre>".print_r($detail, TRUE)."</pre>";
-    exit;
     
     $details = new CultureFeed_Cdb_Data_EventDetailList();
     $details->add($detail);
