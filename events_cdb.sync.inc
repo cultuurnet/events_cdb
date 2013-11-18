@@ -99,6 +99,7 @@ function events_cdb_node_presave($node) {
       $uri = file_load($node->{'field_photo'}['und'][0]['fid'])->uri;
       // Remove the itok parameter (since drupal 7.20)
       $file->setHLink(preg_replace('/\?.*/', '',image_style_url('large', $uri)));
+      watchdog('events_cdb', 'Hlink of media posted to udb: %hlink', array('%hlink' => preg_replace('/\?.*/', '',image_style_url('large', $uri))), WATCHDOG_NOTICE);
       $file->setMediaType(CultureFeed_Cdb_Data_File::MEDIA_TYPE_PHOTO);
       $file->setFileName($node->{'original'}->{'field_photo'}['und'][0]['filename']);
       $filetype = str_replace('image/', '', $node->{'original'}->{'field_photo'}['und'][0]['filemime']);
@@ -113,6 +114,8 @@ function events_cdb_node_presave($node) {
       
       $detail->getMedia()->add($file);    
     }
+    print "<pre>".print_r($detail, TRUE)."</pre>";
+    exit;
     
     $details = new CultureFeed_Cdb_Data_EventDetailList();
     $details->add($detail);
